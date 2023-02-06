@@ -1,34 +1,61 @@
-﻿using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Data;
 using System.IO;
+using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace BestBuyCRUDBestPractices
 {
-    class Program
+   public class Program
     {
         static void Main(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-            
-            var connString = config.GetConnectionString("DefaultConnection");
 
+          #region Configuration
+
+            var config = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json")
+                            .Build();
+
+            string connString = config.GetConnectionString("DefaultConnection");
+           #endregion  
             IDbConnection conn = new MySqlConnection(connString);
             var repo = new DapperDepartmentRepository(conn);
 
-            var departments = repo.GetAllDepartments();
+            Console.WriteLine("Hello user, here are the current departments:");
+            var depos = repo.GetAllDepartments();
+            
 
-            //var repo = new DepartmentRepository(connString);
-            //var departments = repo.GetAllDepartments();
-
-            foreach (var dept in departments)
+            foreach (var depo in depos)
             {
-                Console.WriteLine($"Department Name: {dept.Name, -20} Department Id: {dept.ID}");
+                Console.WriteLine($"Id: {depo.DepartmentId} Name: {depo.Name}");
             }
+
+            Console.WriteLine("Do you want to add a department?");
+            string userResponse = Console.ReadLine();
+            if(userResponse.ToLower() == "yes")
+            {
+                Console.WriteLine("What is name of new department");
+                userResponse = Console.ReadLine();
+
+                repo.InsertDepartment(userResponse);
+                Print(repo.GetAllDepartments());
+            }
+
+            Console.WriteLine("Have a great day.");
+
+        }
+
+        private static void Print(IEnumerable<Department> depos)
+        {
+           foreach (var depo in depos)
+            {
+                Console.WriteLine($"Id: {depo.DepartmentId} Name: {depo.Name}");
+            }
+
+
         }
     }
 }

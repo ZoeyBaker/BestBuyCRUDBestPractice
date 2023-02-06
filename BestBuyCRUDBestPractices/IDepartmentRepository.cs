@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BestBuyCRUDBestPractices
 {
-    interface IDepartmentRepository
+    public interface IDepartmentRepository
     {
         IEnumerable<Department> GetAllDepartments();
     }

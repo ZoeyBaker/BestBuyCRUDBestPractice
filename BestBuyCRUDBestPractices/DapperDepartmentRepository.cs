@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BestBuyCRUDBestPractices
 {
-    class DapperDepartmentRepository : IDepartmentRepository
+   public class DapperDepartmentRepository : IDepartmentRepository
     {
         private readonly IDbConnection _connection;
 
@@ -18,7 +18,9 @@ namespace BestBuyCRUDBestPractices
 
         public IEnumerable<Department> GetAllDepartments()
         {
-            return _connection.Query<Department>("SELECT * FROM departments").ToList();
+            return _connection.Query<Department>("SELECT * FROM departments");
+
+          
         }
 
         public void InsertDepartment(string newDepartmentName)
